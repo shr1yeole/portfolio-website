@@ -54,10 +54,11 @@ export const VIDEOS: VideoPortfolioItem[] = [];
 // Replace logoUrl with your Cloudinary-hosted logo images when ready.
 export const BRANDS: Brand[] = [
   { name: 'Sirade Infra', logoUrl: '' },
-  { name: 'Social Spark', logoUrl: '' },
+  { name: 'Ujjwal Electronics', logoUrl: '' },
   { name: 'Trendo Media', logoUrl: '' },
   { name: 'Cocorico', logoUrl: '' },
   { name: '3D Planet', logoUrl: '' },
   { name: 'Dada IT Services', logoUrl: '' },
-  { name: 'Ujjwal Electronics', logoUrl: '' },
+  { name: 'Social Spark', logoUrl: '' },
+  { name: 'Royalsuns', logoUrl: '' },
 ];
