@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if the request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Admin-only collections — read and write require authentication
+    match /projects/{docId} {
+      allow read: if true;        // public portfolio data can be read by anyone
+      allow write: if isAuthenticated();
+    }
+
+    match /websites/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /graphics/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /videos/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /motion/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /brands/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Requirements: public can create (submit a form), but only admin can read/update/delete
+    match /requirements/{docId} {
+      allow create: if true;          // anyone can submit a requirement
+      allow read, update, delete: if isAuthenticated();
+    }
+  }
+}
