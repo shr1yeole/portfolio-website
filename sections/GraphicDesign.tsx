@@ -12,17 +12,26 @@ const GRAPHIC_CATEGORIES = ['Graphic Designs', 'Branding', 'Social Media Creativ
 
 export function GraphicDesign({ projects }: { projects: AdminProject[] }) {
   const graphicItems = projects.filter(p => GRAPHIC_CATEGORIES.includes(p.category));
-  const dynamicCategories = ['All', ...Array.from(new Set(graphicItems.map(p => p.category)))];
+  
+  const displayGraphicItems = graphicItems.length > 0 ? graphicItems : [
+    { id: 'demo-gd-1', title: 'Neon Cyberpunk Poster', category: 'Posters', description: 'Futuristic poster design.', technologies: [], thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&h=600&fit=crop', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=1200&h=1200&fit=crop', status: 'Published', displayOrder: 0, featured: false } as AdminProject,
+    { id: 'demo-gd-2', title: 'Minimalist Brand Identity', category: 'Branding', description: 'Clean branding for a tech startup.', technologies: [], thumbnail: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=600&fit=crop', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=1200&fit=crop', status: 'Published', displayOrder: 1, featured: false } as AdminProject,
+    { id: 'demo-gd-3', title: 'Fashion Social Campaign', category: 'Social Media Creatives', description: 'Instagram campaign assets.', technologies: [], thumbnail: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&h=600&fit=crop', image: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1200&h=1200&fit=crop', status: 'Published', displayOrder: 2, featured: false } as AdminProject,
+    { id: 'demo-gd-4', title: 'Tech Startup Logo', category: 'Logo Design', description: 'Vector logo design.', technologies: [], thumbnail: 'https://images.unsplash.com/photo-1629757509637-7c99379d6d26?w=600&h=600&fit=crop', image: 'https://images.unsplash.com/photo-1629757509637-7c99379d6d26?w=1200&h=1200&fit=crop', status: 'Published', displayOrder: 3, featured: false } as AdminProject,
+    { id: 'demo-gd-5', title: 'Product Photography', category: 'Photography', description: 'Studio shots of cosmetics.', technologies: [], thumbnail: 'https://images.unsplash.com/photo-1521556662401-522ab73ce3bb?w=600&h=600&fit=crop', image: 'https://images.unsplash.com/photo-1521556662401-522ab73ce3bb?w=1200&h=1200&fit=crop', status: 'Published', displayOrder: 4, featured: false } as AdminProject,
+  ];
+
+  const dynamicCategories = ['All', ...Array.from(new Set(displayGraphicItems.map(p => p.category)))];
 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
 
   const filteredItems = selectedCategory === 'All'
-    ? graphicItems
-    : graphicItems.filter((item) => item.category === selectedCategory);
+    ? displayGraphicItems
+    : displayGraphicItems.filter((item) => item.category === selectedCategory);
 
   const openLightbox = (id: string) => {
-    const idx = graphicItems.findIndex((item) => item.id === id);
+    const idx = displayGraphicItems.findIndex((item) => item.id === id);
     if (idx !== -1) {
       setActiveImageIndex(idx);
     }
@@ -35,21 +44,19 @@ export function GraphicDesign({ projects }: { projects: AdminProject[] }) {
   const showNext = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (activeImageIndex !== null) {
-      setActiveImageIndex((activeImageIndex + 1) % graphicItems.length);
+      setActiveImageIndex((activeImageIndex + 1) % displayGraphicItems.length);
     }
   };
 
   const showPrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (activeImageIndex !== null) {
-      setActiveImageIndex((activeImageIndex - 1 + graphicItems.length) % graphicItems.length);
+      setActiveImageIndex((activeImageIndex - 1 + displayGraphicItems.length) % displayGraphicItems.length);
     }
   };
 
-  if (graphicItems.length === 0) return null;
-
   return (
-    <section id="graphics" className="py-24 relative bg-background">
+    <section id="graphics" className="py-24 relative">
       <div className="absolute top-[30%] right-[-10%] w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px]" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -157,21 +164,21 @@ export function GraphicDesign({ projects }: { projects: AdminProject[] }) {
 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={graphicItems[activeImageIndex].image || graphicItems[activeImageIndex].thumbnail}
-                alt={graphicItems[activeImageIndex].title}
+                src={displayGraphicItems[activeImageIndex].image || displayGraphicItems[activeImageIndex].thumbnail}
+                alt={displayGraphicItems[activeImageIndex].title}
                 className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10"
               />
 
               <div className="mt-4 text-center">
                 <span className="text-xs font-bold text-secondary uppercase tracking-wider">
-                  {graphicItems[activeImageIndex].category}
+                  {displayGraphicItems[activeImageIndex].category}
                 </span>
                 <h3 className="text-white font-bold text-xl mt-1">
-                  {graphicItems[activeImageIndex].title}
+                  {displayGraphicItems[activeImageIndex].title}
                 </h3>
-                {graphicItems[activeImageIndex].description && (
+                {displayGraphicItems[activeImageIndex].description && (
                   <p className="text-white/60 text-xs mt-1 max-w-md mx-auto">
-                    {graphicItems[activeImageIndex].description}
+                    {displayGraphicItems[activeImageIndex].description}
                   </p>
                 )}
               </div>

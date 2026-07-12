@@ -15,7 +15,7 @@ const STATS = [
 
 export function About() {
   return (
-    <section id="about" className="py-16 sm:py-24 relative overflow-hidden bg-background">
+    <section id="about" className="py-16 sm:py-24 relative overflow-hidden">
       {/* Decorative Glow */}
       <div className="absolute top-[30%] right-[-10%] w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px]" />
 

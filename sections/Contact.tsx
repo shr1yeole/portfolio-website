@@ -43,20 +43,20 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden bg-background">
+    <section id="contact" className="py-24 relative overflow-hidden">
       <div className="absolute bottom-[10%] left-[-10%] w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Get In Touch" subtitle="Contact Me" align="center" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
+
           {/* Left Column: Direct Contacts */}
           <div className="lg:col-span-5 space-y-6">
             <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-gradient">
               Let&apos;s build something spectacular.
             </h3>
-            
+
             <p className="text-foreground/75 leading-relaxed text-sm md:text-base">
               I&apos;m open to freelance gigs, client projects, and creative collaborations.
               Whether you need a website, social media creatives, a promotional video, or a
@@ -70,7 +70,7 @@ export function Contact() {
                 </div>
                 <div>
                   <h4 className="text-[10px] sm:text-xs uppercase font-bold text-foreground/40">Email</h4>
-                  <p className="text-sm font-semibold">shravanyeole6@gmail.com</p>
+                  <p className="text-sm font-semibold">shravancyeole123@gmail.com</p>
                 </div>
               </div>
 
@@ -80,7 +80,7 @@ export function Contact() {
                 </div>
                 <div>
                   <h4 className="text-[10px] sm:text-xs uppercase font-bold text-foreground/40">Phone</h4>
-                  <p className="text-sm font-semibold">+91 93700 95488</p>
+                  <p className="text-sm font-semibold">+91 96993 60181</p>
                 </div>
               </div>
 
@@ -110,7 +110,7 @@ export function Contact() {
                     required
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-background/50 border border-border-glow text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300"
+                    className="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-border-glow text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300"
                     placeholder="Enter your name"
                   />
                 </div>
@@ -125,7 +125,7 @@ export function Contact() {
                     required
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                    className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-background/50 border border-border-glow text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300"
+                    className="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-border-glow text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300"
                     placeholder="Enter your email"
                   />
                 </div>
@@ -140,7 +140,7 @@ export function Contact() {
                     rows={4}
                     value={formState.message}
                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                    className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-background/50 border border-border-glow text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300 resize-none sm:min-h-[120px]"
+                    className="w-full px-4 py-2.5 sm:py-3 rounded-xl border border-border-glow text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300 resize-none sm:min-h-[120px]"
                     placeholder="Describe your project details"
                   />
                 </div>

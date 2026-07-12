@@ -9,7 +9,7 @@ export function Brands() {
   const brandsLoop = [...BRANDS, ...BRANDS, ...BRANDS];
 
   return (
-    <section id="brands" className="py-20 relative bg-background/50 overflow-hidden">
+    <section id="brands" className="py-20 relative overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           title="Clients & Brands"

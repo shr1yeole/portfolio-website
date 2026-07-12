@@ -12,17 +12,23 @@ import { getOptimizedImageUrl } from '@/lib/cloudinary';
 export function FeaturedProjects({ projects }: { projects: AdminProject[] }) {
   const featured = projects.filter((project) => project.featured);
 
-  if (featured.length === 0) return null;
+  const displayFeatured = featured.length > 0 ? featured : [
+    { id: 'demo-feat-1', title: 'Award-Winning Web App', category: 'Websites', description: 'A massive web application that scaled to 1M users.', technologies: ['React', 'Node.js', 'AWS'], thumbnail: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop', liveUrl: '#', githubUrl: '#', status: 'Published', displayOrder: 0, featured: true } as AdminProject,
+    { id: 'demo-feat-2', title: 'Global Brand Identity', category: 'Branding', description: 'Complete rebrand for an international tech firm.', technologies: ['Illustrator', 'Photoshop'], thumbnail: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=500&fit=crop', liveUrl: '#', githubUrl: '', status: 'Published', displayOrder: 1, featured: true } as AdminProject,
+    { id: 'demo-feat-3', title: 'Festival Aftermovie', category: 'Video Editing', description: 'High-energy edit of a 3-day music festival.', technologies: ['Premiere Pro', 'DaVinci Resolve'], thumbnail: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=500&fit=crop', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', liveUrl: '', githubUrl: '', status: 'Published', displayOrder: 2, featured: true } as AdminProject,
+    { id: 'demo-feat-4', title: 'Mobile Banking App', category: 'Flutter Projects', description: 'Secure fintech application with complex animations.', technologies: ['Flutter', 'Firebase'], thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop', githubUrl: '#', liveUrl: '', status: 'Published', displayOrder: 3, featured: true } as AdminProject,
+    { id: 'demo-feat-5', title: '3D Product Launch', category: 'Motion Graphics', description: 'Product launch video entirely made in 3D.', technologies: ['Cinema4D', 'Octane'], thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=500&fit=crop', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4', liveUrl: '', githubUrl: '', status: 'Published', displayOrder: 4, featured: true } as AdminProject,
+  ];
 
   return (
-    <section id="featured" className="py-24 relative overflow-hidden bg-background">
+    <section id="featured" className="py-24 relative overflow-hidden">
       <div className="absolute top-[40%] right-[-10%] w-[350px] h-[350px] bg-secondary/5 rounded-full blur-[120px]" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Featured Work" subtitle="Selected Projects" align="center" />
 
         <div className="grid grid-cols-1 gap-12">
-          {featured.map((project, index) => {
+          {displayFeatured.map((project, index) => {
             const isEven = index % 2 === 0;
             const optimizedThumbnail = getOptimizedImageUrl(project.thumbnail, 800, 500);
 

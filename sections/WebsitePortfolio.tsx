@@ -16,16 +16,23 @@ const NON_WEB_CATEGORIES = [
 export function WebsitePortfolio({ projects }: { projects: AdminProject[] }) {
   const webProjects = projects.filter(p => !NON_WEB_CATEGORIES.includes(p.category));
 
-  if (webProjects.length === 0) return null;
+  const displayProjects = webProjects.length > 0 ? webProjects : [
+    { id: 'demo-web-1', title: 'E-Commerce Platform', category: 'Websites', description: 'A modern e-commerce solution with cart and checkout.', technologies: ['React', 'Next.js'], thumbnail: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=380&fit=crop', githubUrl: '#', liveUrl: '#', status: 'Published', displayOrder: 0, featured: false } as AdminProject,
+    { id: 'demo-web-2', title: 'SaaS Dashboard', category: 'Full Stack Projects', description: 'Analytics dashboard with real-time data visualization.', technologies: ['React', 'Tailwind'], thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=380&fit=crop', githubUrl: '#', liveUrl: '#', status: 'Published', displayOrder: 1, featured: false } as AdminProject,
+    { id: 'demo-web-3', title: 'Restaurant App', category: 'Flutter Projects', description: 'Cross-platform mobile app for food ordering.', technologies: ['Flutter', 'Firebase'], thumbnail: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=380&fit=crop', githubUrl: '#', liveUrl: '#', status: 'Published', displayOrder: 2, featured: false } as AdminProject,
+    { id: 'demo-web-4', title: 'Corporate Blog', category: 'WordPress Websites', description: 'SEO-optimized blog for a marketing agency.', technologies: ['WordPress', 'PHP'], thumbnail: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=600&h=380&fit=crop', githubUrl: '#', liveUrl: '#', status: 'Published', displayOrder: 3, featured: false } as AdminProject,
+    { id: 'demo-web-5', title: 'Inventory System', category: 'Java Projects', description: 'Desktop application for warehouse management.', technologies: ['Java', 'MySQL'], thumbnail: 'https://images.unsplash.com/photo-1586528116311-ad8ed7c50800?w=600&h=380&fit=crop', githubUrl: '#', liveUrl: '#', status: 'Published', displayOrder: 4, featured: false } as AdminProject,
+  ];
+
   return (
-    <section id="websites" className="py-24 relative bg-background/50">
+    <section id="websites" className="py-24 relative">
       <div className="absolute top-[20%] left-[-10%] w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading title="Web Application Portfolio" subtitle="Websites & Apps" align="center" />
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-          {webProjects.map((project) => {
+          {displayProjects.map((project) => {
             const optimizedThumbnail = getOptimizedImageUrl(project.thumbnail, 600, 380);
 
             return (

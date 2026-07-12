@@ -76,7 +76,14 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${syne.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col font-sans select-none">
+      <body className="min-h-full flex flex-col font-sans select-none relative">
+        {/* Global Animated Background */}
+        <div className="fixed inset-0 z-[-1] overflow-hidden bg-background pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary/20 blur-[120px] animate-pulse-slow" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-secondary/20 blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-[30%] left-[50%] w-[40vw] h-[40vw] rounded-full bg-primary/10 blur-[100px] animate-float" />
+          <div className="absolute bottom-[20%] left-[10%] w-[35vw] h-[35vw] rounded-full bg-secondary/15 blur-[120px] animate-float" style={{ animationDelay: '3s' }} />
+        </div>
         {children}
       </body>
     </html>

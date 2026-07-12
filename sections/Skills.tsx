@@ -20,7 +20,7 @@ export function Skills() {
   const filteredSkills = SKILLS.filter((skill) => skill.category === activeCategory);
 
   return (
-    <section id="skills" className="py-24 relative bg-background/50">
+    <section id="skills" className="py-24 relative">
       <div className="absolute top-[20%] left-[-10%] w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">

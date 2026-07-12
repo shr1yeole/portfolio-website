@@ -52,4 +52,12 @@ export const VIDEOS: VideoPortfolioItem[] = [];
 // ─── BRANDS / CLIENTS WORKED WITH ─────────────────────────────────────────────
 // logoUrl is optional — a text fallback is shown if not provided.
 // Replace logoUrl with your Cloudinary-hosted logo images when ready.
-export const BRANDS: Brand[] = [];
+export const BRANDS: Brand[] = [
+  { name: 'Sirade Infra', logoUrl: '' },
+  { name: 'Social Spark', logoUrl: '' },
+  { name: 'Trendo Media', logoUrl: '' },
+  { name: 'Cocorico', logoUrl: '' },
+  { name: '3D Planet', logoUrl: '' },
+  { name: 'Dada IT Services', logoUrl: '' },
+  { name: 'Ujjwal Electronics', logoUrl: '' },
+];
