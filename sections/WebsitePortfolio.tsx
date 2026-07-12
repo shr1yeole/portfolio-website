@@ -1,13 +1,22 @@
 'use client';
 
 import { ExternalLink } from 'lucide-react';
-import { WEBSITES } from '@/data/portfolio';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
-export function WebsitePortfolio() {
+import type { AdminProject } from '@/types/admin';
+
+const NON_WEB_CATEGORIES = [
+  'Graphic Designs', 'Branding', 'Social Media Creatives', 'Posters', 'Logo Design', 'Photography',
+  'Motion Graphics', 'Video Editing', 'Meta Ads', 'Google Ads'
+];
+
+export function WebsitePortfolio({ projects }: { projects: AdminProject[] }) {
+  const webProjects = projects.filter(p => !NON_WEB_CATEGORIES.includes(p.category));
+
+  if (webProjects.length === 0) return null;
   return (
     <section id="websites" className="py-24 relative bg-background/50">
       <div className="absolute top-[20%] left-[-10%] w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px]" />
@@ -16,7 +25,7 @@ export function WebsitePortfolio() {
         <SectionHeading title="Web Application Portfolio" subtitle="Websites & Apps" align="center" />
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-          {WEBSITES.map((project) => {
+          {webProjects.map((project) => {
             const optimizedThumbnail = getOptimizedImageUrl(project.thumbnail, 600, 380);
 
             return (

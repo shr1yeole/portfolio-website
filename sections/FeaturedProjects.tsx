@@ -3,14 +3,16 @@
 import React from 'react';
 import { ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { WEBSITES } from '@/data/portfolio';
+import type { AdminProject } from '@/types/admin';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
-export function FeaturedProjects() {
-  const featured = WEBSITES.filter((project) => project.featured);
+export function FeaturedProjects({ projects }: { projects: AdminProject[] }) {
+  const featured = projects.filter((project) => project.featured);
+
+  if (featured.length === 0) return null;
 
   return (
     <section id="featured" className="py-24 relative overflow-hidden bg-background">

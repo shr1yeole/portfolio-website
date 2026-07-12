@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { getClientCollection } from '@/lib/firestore-client';
+import type { AdminProject } from '@/types/admin';
 
 // Dynamically import all sections with loading skeletons
 const Hero = dynamic(() => import('@/sections/Hero'), {
@@ -52,13 +54,24 @@ function SectionSkeleton() {
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<AdminProject[]>([]);
 
   useEffect(() => {
-    // Simulate initial page assets loading
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1800);
-    return () => clearTimeout(timer);
+    // Fetch projects from Firebase
+    const fetchProjects = async () => {
+      try {
+        const data = await getClientCollection<AdminProject>('projects', 'displayOrder', 'asc');
+        // Only keep published projects
+        const published = data.filter(p => p.status === 'Published' || !p.status);
+        setProjects(published);
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
   }, []);
 
   return (
@@ -128,11 +141,11 @@ export default function Home() {
             <Hero />
             <About />
             <Skills />
-            <FeaturedProjects />
-            <WebsitePortfolio />
-            <GraphicDesign />
-            <MotionGraphics />
-            <VideoPortfolio />
+            <FeaturedProjects projects={projects} />
+            <WebsitePortfolio projects={projects} />
+            <GraphicDesign projects={projects} />
+            <MotionGraphics projects={projects} />
+            <VideoPortfolio projects={projects} />
             <Brands />
             <Contact />
           </main>

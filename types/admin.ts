@@ -4,14 +4,18 @@ export interface AdminProject {
   id: string;
   title: string;
   category: string;
+  customCategory?: string;
   description: string;
-  technologies: string[]; // stored as array
+  clientName?: string;
+  technologies: string[];
   githubUrl?: string;
   liveUrl?: string;
   thumbnail: string;
   image: string;
   videoUrl?: string;
+  projectDate?: string;
   featured: boolean;
+  status: 'Published' | 'Draft';
   displayOrder: number;
   createdAt: string;
   updatedAt: string;

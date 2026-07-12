@@ -3,23 +3,26 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn } from 'lucide-react';
-import { GRAPHIC_DESIGNS } from '@/data/portfolio';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { cn } from '@/lib/utils';
+import type { AdminProject } from '@/types/admin';
 
-const CATEGORIES = ['All', 'Poster Art', 'Branding', 'Cover Art', 'Print / Editorial', 'Typography'];
+const GRAPHIC_CATEGORIES = ['Graphic Designs', 'Branding', 'Social Media Creatives', 'Posters', 'Logo Design', 'Photography'];
 
-export function GraphicDesign() {
+export function GraphicDesign({ projects }: { projects: AdminProject[] }) {
+  const graphicItems = projects.filter(p => GRAPHIC_CATEGORIES.includes(p.category));
+  const dynamicCategories = ['All', ...Array.from(new Set(graphicItems.map(p => p.category)))];
+
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
 
   const filteredItems = selectedCategory === 'All'
-    ? GRAPHIC_DESIGNS
-    : GRAPHIC_DESIGNS.filter((item) => item.category === selectedCategory);
+    ? graphicItems
+    : graphicItems.filter((item) => item.category === selectedCategory);
 
   const openLightbox = (id: string) => {
-    const idx = GRAPHIC_DESIGNS.findIndex((item) => item.id === id);
+    const idx = graphicItems.findIndex((item) => item.id === id);
     if (idx !== -1) {
       setActiveImageIndex(idx);
     }
@@ -32,16 +35,18 @@ export function GraphicDesign() {
   const showNext = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (activeImageIndex !== null) {
-      setActiveImageIndex((activeImageIndex + 1) % GRAPHIC_DESIGNS.length);
+      setActiveImageIndex((activeImageIndex + 1) % graphicItems.length);
     }
   };
 
   const showPrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (activeImageIndex !== null) {
-      setActiveImageIndex((activeImageIndex - 1 + GRAPHIC_DESIGNS.length) % GRAPHIC_DESIGNS.length);
+      setActiveImageIndex((activeImageIndex - 1 + graphicItems.length) % graphicItems.length);
     }
   };
+
+  if (graphicItems.length === 0) return null;
 
   return (
     <section id="graphics" className="py-24 relative bg-background">
@@ -54,7 +59,7 @@ export function GraphicDesign() {
         <div className="flex justify-center mb-8 sm:mb-12 w-full overflow-hidden">
           <div className="w-full overflow-x-auto pb-4 -mb-4 snap-x hide-scrollbar">
             <div className="w-max mx-auto glass p-1.5 rounded-full flex flex-nowrap gap-1 border border-border-glow">
-              {CATEGORIES.map((cat) => (
+              {dynamicCategories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
@@ -79,7 +84,7 @@ export function GraphicDesign() {
         >
           <AnimatePresence mode="popLayout">
             {filteredItems.map((item) => {
-              const optimizedUrl = getOptimizedImageUrl(item.imageUrl, 600, 600);
+              const optimizedUrl = getOptimizedImageUrl(item.image || item.thumbnail, 600, 600);
               
               return (
                 <motion.div
@@ -152,21 +157,21 @@ export function GraphicDesign() {
 
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={GRAPHIC_DESIGNS[activeImageIndex].imageUrl}
-                alt={GRAPHIC_DESIGNS[activeImageIndex].title}
+                src={graphicItems[activeImageIndex].image || graphicItems[activeImageIndex].thumbnail}
+                alt={graphicItems[activeImageIndex].title}
                 className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10"
               />
 
               <div className="mt-4 text-center">
                 <span className="text-xs font-bold text-secondary uppercase tracking-wider">
-                  {GRAPHIC_DESIGNS[activeImageIndex].category}
+                  {graphicItems[activeImageIndex].category}
                 </span>
                 <h3 className="text-white font-bold text-xl mt-1">
-                  {GRAPHIC_DESIGNS[activeImageIndex].title}
+                  {graphicItems[activeImageIndex].title}
                 </h3>
-                {GRAPHIC_DESIGNS[activeImageIndex].description && (
+                {graphicItems[activeImageIndex].description && (
                   <p className="text-white/60 text-xs mt-1 max-w-md mx-auto">
-                    {GRAPHIC_DESIGNS[activeImageIndex].description}
+                    {graphicItems[activeImageIndex].description}
                   </p>
                 )}
               </div>
