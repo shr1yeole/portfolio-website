@@ -19,7 +19,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
   const centerBoxRef = useRef<HTMLDivElement>(null);
   const portfolioLabelRef = useRef<HTMLDivElement>(null);
   const monogramBoxRef = useRef<HTMLDivElement>(null);
-  const monogramSvgRef = useRef<SVGSVGElement>(null);
+  const monogramSvgRef = useRef<HTMLDivElement>(null);
   const sweepRef = useRef<HTMLDivElement>(null);
   const auraGlowRef = useRef<HTMLDivElement>(null);
   const nameCharsRef = useRef<(HTMLSpanElement | null)[]>([]);
@@ -637,40 +637,19 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
             />
           </svg>
 
-          {/* SVG Monogram (Indigo to Blue to Cyan Gradient) */}
-          <svg
+          {/* Custom SY Monogram (Reference Logo with Theme Gradient) */}
+          <div
             ref={monogramSvgRef}
-            viewBox="0 0 140 140"
-            className="w-22 h-22 sm:w-28 sm:h-28 z-20 transition-all filter drop-shadow-[0_4px_18px_rgba(99,102,241,0.38)]"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            className="w-22 h-22 sm:w-28 sm:h-28 z-20 transition-all flex items-center justify-center filter drop-shadow-[0_4px_18px_rgba(99,102,241,0.38)]"
           >
-            <defs>
-              <linearGradient id="syLightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#4F46E5" />
-                <stop offset="45%" stopColor="#3B82F6" />
-                <stop offset="100%" stopColor="#06B6D4" />
-              </linearGradient>
-            </defs>
-
-            {/* Stylized 'S' stroke */}
-            <path
-              d="M86 44C81 36 69 34 58 36C45 38 40 47 41 55C42 64 54 68 64 71C77 75 85 81 83 91C81 102 70 107 55 106C42 105 34 97 32 89"
-              stroke="url(#syLightGrad)"
-              strokeWidth="5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/sy-logo-gradient.png"
+              alt="SY Monogram"
+              className="w-full h-full object-contain pointer-events-none select-none"
+              draggable={false}
             />
-
-            {/* Stylized 'Y' stroke slicing through */}
-            <path
-              d="M56 46L73 66M94 42L74 66V102"
-              stroke="url(#syLightGrad)"
-              strokeWidth="5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          </div>
         </div>
 
         {/* 2. PERSONAL BRAND NAME: "SHRAVAN YEOLE" */}
