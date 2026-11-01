@@ -17,6 +17,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
   const bottomCurtainRef = useRef<HTMLDivElement>(null);
   const atmosphereRef = useRef<HTMLDivElement>(null);
   const centerBoxRef = useRef<HTMLDivElement>(null);
+  const portfolioLabelRef = useRef<HTMLDivElement>(null);
   const monogramBoxRef = useRef<HTMLDivElement>(null);
   const monogramSvgRef = useRef<SVGSVGElement>(null);
   const sweepRef = useRef<HTMLDivElement>(null);
@@ -67,7 +68,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
     document.body.style.overflow = 'hidden';
 
     // -------------------------------------------------------------
-    // Canvas Particle System with Device Pixel Ratio & Light Waves
+    // Canvas Particle System with Wave Mesh & Floating Luminous Nodes
     // -------------------------------------------------------------
     const canvas = canvasRef.current;
     let animId: number;
@@ -77,21 +78,12 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
       vx: number;
       vy: number;
       radius: number;
-      alpha: number;
+      color: string;
       seed: number;
     }[] = [];
 
-    let waves: {
-      x: number;
-      y: number;
-      r: number;
-      alpha: number;
-      vx: number;
-      vy: number;
-    }[] = [];
-
     const isMobile = window.innerWidth < 768;
-    const particleCount = isMobile ? 35 : 75;
+    const particleCount = isMobile ? 30 : 60;
 
     const handleResize = () => {
       if (!canvas) return;
@@ -112,45 +104,24 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
       handleResize();
       window.addEventListener('resize', handleResize);
 
+      const colors = [
+        'rgba(99, 102, 241, 0.6)', // Indigo
+        'rgba(59, 130, 246, 0.6)', // Blue
+        'rgba(6, 182, 212, 0.7)',  // Cyan
+        'rgba(168, 85, 247, 0.5)', // Lavender
+      ];
+
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 0.45,
-          vy: -0.35 - Math.random() * 0.55,
-          radius: Math.random() * 2.2 + 1.2,
-          alpha: Math.random() * 0.45 + 0.4,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: -0.25 - Math.random() * 0.45,
+          radius: Math.random() * 2.0 + 1.2,
+          color: colors[Math.floor(Math.random() * colors.length)],
           seed: Math.random() * 100,
         });
       }
-
-      // Ambient glowing light streak waves
-      waves = [
-        {
-          x: window.innerWidth * 0.25,
-          y: window.innerHeight * 0.4,
-          r: 90,
-          alpha: 0.12,
-          vx: 0.2,
-          vy: -0.1,
-        },
-        {
-          x: window.innerWidth * 0.75,
-          y: window.innerHeight * 0.55,
-          r: 120,
-          alpha: 0.1,
-          vx: -0.15,
-          vy: -0.12,
-        },
-        {
-          x: window.innerWidth * 0.5,
-          y: window.innerHeight * 0.75,
-          r: 80,
-          alpha: 0.08,
-          vx: 0.1,
-          vy: -0.18,
-        },
-      ];
 
       let t = 0;
       const render = () => {
@@ -158,39 +129,106 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         t += 0.016;
 
-        // Draw ambient wave blooms
-        for (let i = 0; i < waves.length; i++) {
-          const w = waves[i];
-          w.x += w.vx;
-          w.y += w.vy;
-          if (w.y < -w.r) w.y = window.innerHeight + w.r;
-          if (w.x < -w.r) w.x = window.innerWidth + w.r;
-          if (w.x > window.innerWidth + w.r) w.x = -w.r;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
-          const grad = ctx.createRadialGradient(w.x, w.y, 0, w.x, w.y, w.r);
-          grad.addColorStop(0, `rgba(214, 184, 135, ${w.alpha})`);
-          grad.addColorStop(1, 'transparent');
+        // 1. TOP-LEFT PARTICLE WAVE MESH (Reference Image 2)
+        const tlStrands = 6;
+        for (let s = 0; s < tlStrands; s++) {
+          const offset = s * 16;
           ctx.beginPath();
-          ctx.arc(w.x, w.y, w.r, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
+          for (let x = 0; x < w * 0.58; x += 18) {
+            const normX = x / (w * 0.58);
+            const y =
+              h * 0.08 +
+              Math.sin(normX * 3.5 + t * 0.75 + s * 0.3) * 38 +
+              Math.cos(normX * 5 - t * 0.45) * 18 +
+              offset +
+              normX * h * 0.28;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle =
+            s % 2 === 0 ? 'rgba(6, 182, 212, 0.28)' : 'rgba(99, 102, 241, 0.25)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // Wave nodes
+          for (let x = 0; x < w * 0.58; x += 36) {
+            const normX = x / (w * 0.58);
+            const y =
+              h * 0.08 +
+              Math.sin(normX * 3.5 + t * 0.75 + s * 0.3) * 38 +
+              Math.cos(normX * 5 - t * 0.45) * 18 +
+              offset +
+              normX * h * 0.28;
+            const alpha = (1 - normX * 0.7) * 0.75;
+            ctx.beginPath();
+            ctx.arc(x, y, 2.0, 0, Math.PI * 2);
+            ctx.fillStyle =
+              s % 2 === 0 ? `rgba(6, 182, 212, ${alpha})` : `rgba(99, 102, 241, ${alpha})`;
+            ctx.shadowColor = '#06B6D4';
+            ctx.shadowBlur = 4;
+            ctx.fill();
+          }
         }
 
-        // Draw ambient floating champagne particles with glowing halo
+        // 2. BOTTOM-RIGHT PARTICLE WAVE MESH (Reference Image 2)
+        const brStrands = 7;
+        for (let s = 0; s < brStrands; s++) {
+          const offset = s * 16;
+          ctx.beginPath();
+          for (let x = w * 0.38; x < w + 20; x += 18) {
+            const normX = (x - w * 0.38) / (w * 0.62);
+            const y =
+              h * 0.82 -
+              Math.sin(normX * 4 + t * 0.7 + s * 0.25) * 45 -
+              Math.cos(normX * 4.5 - t * 0.4) * 20 +
+              offset -
+              normX * h * 0.12;
+            if (x === Math.ceil((w * 0.38) / 18) * 18) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle =
+            s % 2 === 0 ? 'rgba(99, 102, 241, 0.25)' : 'rgba(6, 182, 212, 0.28)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // Wave nodes
+          for (let x = w * 0.38; x < w + 20; x += 36) {
+            const normX = (x - w * 0.38) / (w * 0.62);
+            const y =
+              h * 0.82 -
+              Math.sin(normX * 4 + t * 0.7 + s * 0.25) * 45 -
+              Math.cos(normX * 4.5 - t * 0.4) * 20 +
+              offset -
+              normX * h * 0.12;
+            const alpha = (0.25 + normX * 0.75) * 0.75;
+            ctx.beginPath();
+            ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+            ctx.fillStyle =
+              s % 2 === 0 ? `rgba(99, 102, 241, ${alpha})` : `rgba(6, 182, 212, ${alpha})`;
+            ctx.shadowColor = '#6366F1';
+            ctx.shadowBlur = 4;
+            ctx.fill();
+          }
+        }
+
+        // 3. AMBIENT DRIFTING PARTICLES
         for (let i = 0; i < particles.length; i++) {
           const p = particles[i];
-          p.x += p.vx + Math.cos(t * 0.6 + p.seed) * 0.4;
-          p.y += p.vy + Math.sin(t * 0.8 + p.seed) * 0.25;
+          p.x += p.vx + Math.cos(t * 0.6 + p.seed) * 0.35;
+          p.y += p.vy + Math.sin(t * 0.8 + p.seed) * 0.2;
 
-          if (p.y < -15) p.y = window.innerHeight + 15;
-          if (p.x < -15) p.x = window.innerWidth + 15;
-          if (p.x > window.innerWidth + 15) p.x = -15;
+          if (p.y < -15) p.y = h + 15;
+          if (p.x < -15) p.x = w + 15;
+          if (p.x > w + 15) p.x = -15;
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(214, 184, 135, ${p.alpha})`;
-          ctx.shadowColor = '#D6B887';
-          ctx.shadowBlur = p.radius * 3.5;
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = '#06B6D4';
+          ctx.shadowBlur = 3;
           ctx.fill();
         }
 
@@ -201,7 +239,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
     }
 
     // -------------------------------------------------------------
-    // GSAP Master Timeline (Exactly 6.0 Seconds)
+    // GSAP Master Timeline (Coordinated 6.0 Seconds Duration)
     // -------------------------------------------------------------
     const ctxGsap = gsap.context(() => {
       const tl = gsap.timeline({
@@ -217,7 +255,17 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
       // ==========================================
       // PHASE 01 — INITIAL APPEARANCE (0.0s – 1.2s)
       // ==========================================
-      // 1. Light sweep reflection across monogram
+      // 1. Top label: PORTFOLIO
+      if (portfolioLabelRef.current) {
+        tl.fromTo(
+          portfolioLabelRef.current,
+          { opacity: 0, y: -8 },
+          { opacity: 0.85, y: 0, duration: 1.0, ease: 'power2.out' },
+          0.05
+        );
+      }
+
+      // 2. Light sweep reflection across monogram
       if (sweepRef.current) {
         tl.fromTo(
           sweepRef.current,
@@ -227,7 +275,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
         );
       }
 
-      // 2. SY Monogram reveal (scale 0.88 -> 1.0, opacity 0 -> 1)
+      // 3. SY Monogram reveal (scale 0.88 -> 1.0, opacity 0 -> 1)
       if (monogramBoxRef.current) {
         tl.fromTo(
           monogramBoxRef.current,
@@ -245,12 +293,12 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
         );
       }
 
-      // 3. Soft champagne-gold glow aura around monogram
+      // 4. Soft lavender-blue glow aura around monogram
       if (auraGlowRef.current) {
         tl.fromTo(
           auraGlowRef.current,
           { opacity: 0, scale: 0.7 },
-          { opacity: 0.7, scale: 1.0, duration: 1.3, ease: 'power2.out' },
+          { opacity: 0.75, scale: 1.0, duration: 1.3, ease: 'power2.out' },
           0.1
         );
       }
@@ -265,7 +313,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
           validChars,
           {
             opacity: 0,
-            y: 28,
+            y: 26,
             filter: 'blur(6px)',
           },
           {
@@ -280,16 +328,16 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
         );
       }
 
-      // 2. Subtitle reveal: smooth fade & upward glide
+      // 2. Subtitle reveal: "CREATIVE DEVELOPER"
       if (subtitleRef.current) {
         tl.fromTo(
           subtitleRef.current,
           {
             opacity: 0,
-            y: 14,
+            y: 12,
           },
           {
-            opacity: 0.9,
+            opacity: 1,
             y: 0,
             duration: 0.95,
             ease: 'power2.out',
@@ -342,7 +390,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
         tl.to(
           monogramSvgRef.current,
           {
-            filter: 'drop-shadow(0 0 25px rgba(214, 184, 135, 0.75))',
+            filter: 'drop-shadow(0 4px 22px rgba(6, 182, 212, 0.55))',
             duration: 1.5,
             ease: 'sine.inOut',
           },
@@ -353,7 +401,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
       // ==========================================
       // PHASE 04 — FINAL REVEAL (4.5s – 6.0s)
       // ==========================================
-      // 4.35s: Central light slight intensification / bloom
+      // 4.35s: Central light bloom
       if (auraGlowRef.current) {
         tl.to(
           auraGlowRef.current,
@@ -369,6 +417,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
 
       // 4.7s: Fade and move branding elements & bottom indicator elegantly upward
       const brandingElements = [
+        portfolioLabelRef.current,
         monogramBoxRef.current,
         centerBoxRef.current,
         bottomBarRef.current,
@@ -411,7 +460,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
       }
 
       // 4.9s - 6.0s: Curtain vertical panel reveal
-      // Top curtain moves up, bottom curtain moves down, seamlessly unveiling the homepage
+      // Pale lavender-blue curtains split open, seamlessly unveiling the light homepage hero
       if (topCurtainRef.current) {
         tl.to(
           topCurtainRef.current,
@@ -472,43 +521,41 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
       className="fixed inset-0 z-[9999] overflow-hidden select-none bg-transparent pointer-events-auto"
       aria-label="Cinematic entrance intro"
     >
-      {/* TOP CURTAIN PANEL (covers top 50.5% to avoid sub-pixel gaps) */}
+      {/* TOP CURTAIN PANEL (Pale lavender-blue gradient matching homepage) */}
       <div
         ref={topCurtainRef}
-        className="absolute top-0 left-0 w-full h-[50.5%] bg-[#050505] z-10 will-change-transform origin-top"
+        className="absolute top-0 left-0 w-full h-[50.5%] z-10 will-change-transform origin-top"
+        style={{ background: 'linear-gradient(to bottom, #F7F9FF 0%, #EEF2FF 100%)' }}
       />
 
-      {/* BOTTOM CURTAIN PANEL (covers bottom 50.5% to avoid sub-pixel gaps) */}
+      {/* BOTTOM CURTAIN PANEL (Pale lavender-blue gradient matching homepage) */}
       <div
         ref={bottomCurtainRef}
-        className="absolute bottom-0 left-0 w-full h-[50.5%] bg-[#050505] z-10 will-change-transform origin-bottom"
+        className="absolute bottom-0 left-0 w-full h-[50.5%] z-10 will-change-transform origin-bottom"
+        style={{ background: 'linear-gradient(to top, #F7F9FF 0%, #EEF2FF 100%)' }}
       />
 
-      {/* ATMOSPHERIC GRADIENTS & LIGHTING */}
+      {/* ATMOSPHERIC BACKGROUND GRADIENTS & GLOWS (Matching Reference Image 1) */}
       <div
         ref={atmosphereRef}
         className="absolute inset-0 pointer-events-none z-15 will-change-opacity"
         style={{
-          background:
-            'radial-gradient(ellipse at 50% 45%, rgba(46, 36, 22, 0.6) 0%, rgba(16, 13, 9, 0.92) 50%, #050505 85%)',
+          background: `
+            radial-gradient(circle at 18% 30%, rgba(99, 102, 241, 0.16) 0%, transparent 55%),
+            radial-gradient(circle at 82% 70%, rgba(6, 182, 212, 0.16) 0%, transparent 55%),
+            radial-gradient(circle at 50% 50%, rgba(220, 235, 255, 0.7) 0%, rgba(240, 244, 255, 0.5) 50%, transparent 80%),
+            #F7F9FF
+          `,
         }}
       />
 
-      {/* PARTICLES CANVAS */}
+      {/* PARTICLES CANVAS (Wave Mesh & Luminous Particles) */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 z-16 pointer-events-none opacity-95 will-change-opacity"
       />
 
-      {/* FILM GRAIN TEXTURE OVERLAY */}
-      <div
-        className="absolute inset-0 pointer-events-none z-17 opacity-[0.045] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* CENTRAL BRANDING CONTENT */}
+      {/* CENTRAL BRANDING CONTENT (Reference Image 2 Composition) */}
       <div
         ref={centerBoxRef}
         className="relative z-20 flex flex-col items-center justify-center w-full h-full px-4 text-center will-change-transform"
@@ -519,61 +566,104 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
           className="absolute w-80 h-80 sm:w-[440px] sm:h-[440px] rounded-full pointer-events-none blur-3xl opacity-0"
           style={{
             background:
-              'radial-gradient(circle, rgba(214, 184, 135, 0.5) 0%, rgba(214, 184, 135, 0.15) 50%, transparent 75%)',
+              'radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(6, 182, 212, 0.15) 50%, transparent 75%)',
           }}
         />
 
-        {/* 1. CUSTOM SY MONOGRAM */}
+        {/* TOP LABEL: PORTFOLIO */}
+        <div
+          ref={portfolioLabelRef}
+          className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.45em] text-[#64748B] mb-5 sm:mb-6 opacity-0"
+          style={{ fontFamily: 'var(--font-sans), sans-serif' }}
+        >
+          PORTFOLIO
+        </div>
+
+        {/* 1. CUSTOM SY MONOGRAM WITH CORNER BRACKETS & CIRCLE */}
         <div
           ref={monogramBoxRef}
-          className="relative w-28 h-28 sm:w-36 sm:h-36 mb-6 sm:mb-8 flex items-center justify-center opacity-0 overflow-hidden"
+          className="relative w-32 h-32 sm:w-40 sm:h-40 mb-6 sm:mb-7 flex items-center justify-center opacity-0 overflow-hidden"
         >
           {/* Subtle light sweep reflection */}
           <div
             ref={sweepRef}
-            className="absolute -inset-y-4 -inset-x-8 w-28 bg-gradient-to-r from-transparent via-[#FFF8E7]/50 to-transparent rotate-25 pointer-events-none z-25 opacity-0 mix-blend-screen"
+            className="absolute -inset-y-4 -inset-x-8 w-28 bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent rotate-25 pointer-events-none z-25 opacity-0 mix-blend-overlay"
           />
 
-          {/* Luxury Geometric Border Frame */}
-          <div className="absolute inset-0 rounded-2xl border border-[#D6B887]/35 rotate-45 scale-80 pointer-events-none" />
-          <div className="absolute inset-1.5 rounded-2xl border border-[#D6B887]/20 rotate-45 scale-90 pointer-events-none" />
+          {/* 4 Corner Brackets (Reference Image 2) */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-10"
+            viewBox="0 0 160 160"
+            fill="none"
+          >
+            {/* Top Left Bracket */}
+            <path
+              d="M 22 42 L 22 22 L 42 22"
+              stroke="rgba(99, 102, 241, 0.45)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+            {/* Top Right Bracket */}
+            <path
+              d="M 118 22 L 138 22 L 138 42"
+              stroke="rgba(99, 102, 241, 0.45)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+            {/* Bottom Left Bracket */}
+            <path
+              d="M 22 118 L 22 138 L 42 138"
+              stroke="rgba(99, 102, 241, 0.45)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+            {/* Bottom Right Bracket */}
+            <path
+              d="M 118 138 L 138 138 L 138 118"
+              stroke="rgba(99, 102, 241, 0.45)"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
 
-          {/* SVG Monogram */}
+            {/* Delicate Thin Circle Frame */}
+            <circle
+              cx="80"
+              cy="80"
+              r="52"
+              stroke="rgba(99, 102, 241, 0.25)"
+              strokeWidth="1.2"
+            />
+          </svg>
+
+          {/* SVG Monogram (Indigo to Blue to Cyan Gradient) */}
           <svg
             ref={monogramSvgRef}
             viewBox="0 0 140 140"
-            className="w-20 h-20 sm:w-28 sm:h-28 z-20 transition-all filter drop-shadow-[0_2px_18px_rgba(214,184,135,0.6)]"
+            className="w-20 h-20 sm:w-26 sm:h-26 z-20 transition-all filter drop-shadow-[0_4px_16px_rgba(99,102,241,0.35)]"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
-              <linearGradient id="syGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFF8E7" />
-                <stop offset="35%" stopColor="#E8CCA0" />
-                <stop offset="70%" stopColor="#D6B887" />
-                <stop offset="100%" stopColor="#967746" />
+              <linearGradient id="syLightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#4F46E5" />
+                <stop offset="45%" stopColor="#3B82F6" />
+                <stop offset="100%" stopColor="#06B6D4" />
               </linearGradient>
             </defs>
-
-            {/* Corner diamond dots */}
-            <circle cx="70" cy="10" r="2" fill="#D6B887" />
-            <circle cx="70" cy="130" r="2" fill="#D6B887" />
-            <circle cx="10" cy="70" r="2" fill="#D6B887" />
-            <circle cx="130" cy="70" r="2" fill="#D6B887" />
 
             {/* Stylized 'S' stroke */}
             <path
               d="M86 44C81 36 69 34 58 36C45 38 40 47 41 55C42 64 54 68 64 71C77 75 85 81 83 91C81 102 70 107 55 106C42 105 34 97 32 89"
-              stroke="url(#syGoldGrad)"
+              stroke="url(#syLightGrad)"
               strokeWidth="5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
 
-            {/* Stylized 'Y' stroke */}
+            {/* Stylized 'Y' stroke slicing through */}
             <path
               d="M56 46L73 66M94 42L74 66V102"
-              stroke="url(#syGoldGrad)"
+              stroke="url(#syLightGrad)"
               strokeWidth="5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -582,12 +672,12 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
         </div>
 
         {/* 2. PERSONAL BRAND NAME: "SHRAVAN YEOLE" */}
-        <div className="overflow-hidden mb-3 sm:mb-4">
+        <div className="overflow-hidden mb-2 sm:mb-2.5">
           <h1
-            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[0.18em] sm:tracking-[0.32em] text-[#F5F1E8] uppercase inline-flex items-center justify-center flex-wrap gap-x-3 sm:gap-x-5"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-[0.2em] sm:tracking-[0.34em] text-[#111827] uppercase inline-flex items-center justify-center flex-wrap gap-x-3 sm:gap-x-5"
             style={{ fontFamily: 'var(--font-display), sans-serif' }}
           >
-            {/* Word 1: SHRAVAN */}
+            {/* Word 1: SHRAVAN (Dark Navy) */}
             <span className="inline-flex whitespace-nowrap">
               {wordOne.split('').map((char) => {
                 const idx = charCounter++;
@@ -597,7 +687,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
                     ref={(el) => {
                       nameCharsRef.current[idx] = el;
                     }}
-                    className="inline-block bg-gradient-to-b from-[#FFFFFF] via-[#F5F1E8] to-[#D6B887] bg-clip-text text-transparent"
+                    className="inline-block text-[#111827]"
                   >
                     {char}
                   </span>
@@ -605,7 +695,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
               })}
             </span>
 
-            {/* Word 2: YEOLE */}
+            {/* Word 2: YEOLE (Indigo to Cyan Gradient) */}
             <span className="inline-flex whitespace-nowrap">
               {wordTwo.split('').map((char) => {
                 const idx = charCounter++;
@@ -615,7 +705,7 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
                     ref={(el) => {
                       nameCharsRef.current[idx] = el;
                     }}
-                    className="inline-block bg-gradient-to-b from-[#FFFFFF] via-[#F5F1E8] to-[#D6B887] bg-clip-text text-transparent"
+                    className="inline-block bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent"
                   >
                     {char}
                   </span>
@@ -625,54 +715,47 @@ export function CinematicIntro({ onComplete }: CinematicIntroProps) {
           </h1>
         </div>
 
-        {/* 3. SUBTITLE: "CREATIVE DEVELOPER | DESIGNER | DIGITAL CREATOR" */}
+        {/* 3. SUBTITLE: "CREATIVE DEVELOPER" (Reference Image 2) */}
         <div
           ref={subtitleRef}
-          className="text-[10px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.16em] sm:tracking-[0.32em] text-[#D6B887] opacity-0 max-w-xs sm:max-w-2xl md:max-w-3xl mx-auto px-2 text-center sm:whitespace-nowrap leading-relaxed"
+          className="text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.32em] text-[#64748B] opacity-0 text-center"
           style={{ fontFamily: 'var(--font-sans), sans-serif' }}
         >
-          <span>Creative Developer</span>
-          <span className="mx-2 sm:mx-3 text-[#D6B887]/50">|</span>
-          <span>Designer</span>
-          <span className="mx-2 sm:mx-3 text-[#D6B887]/50">|</span>
-          <span>Digital Creator</span>
+          CREATIVE DEVELOPER
         </div>
       </div>
 
-      {/* 4. PROGRESS BAR & INDICATOR */}
+      {/* 4. PROGRESS BAR & INDICATOR (Reference Image 2 Layout) */}
       <div
         ref={bottomBarRef}
         className="absolute bottom-8 sm:bottom-12 inset-x-0 z-20 flex flex-col items-center justify-center pointer-events-none px-4"
       >
-        {/* Label */}
-        <span
-          className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-[#F5F1E8]/70 font-semibold mb-3"
-          style={{ fontFamily: 'var(--font-sans), sans-serif' }}
-        >
-          Crafting Your Experience
-        </span>
-
-        {/* Progress Track & Beside Percentage */}
-        <div className="flex items-center space-x-3 sm:space-x-4">
-          {/* Progress Bar Track: 280–320px on desktop */}
-          <div className="w-56 sm:w-72 md:w-80 h-[3.5px] bg-[#1a1a1a] rounded-full overflow-hidden relative shadow-inner">
-            <div
-              ref={progressBarRef}
-              className="h-full bg-gradient-to-r from-[#967746] via-[#D6B887] to-[#FFF7E6] rounded-full relative"
-              style={{
-                width: '0%',
-                boxShadow: '0 0 12px rgba(214, 184, 135, 0.9)',
-              }}
-            />
-          </div>
-
-          {/* Numerical percentage counter */}
+        {/* Label on Left, Percentage on Right */}
+        <div className="w-64 sm:w-80 md:w-96 flex items-center justify-between mb-2.5">
+          <span
+            className="text-[10px] sm:text-xs tracking-[0.28em] uppercase text-[#64748B] font-semibold"
+            style={{ fontFamily: 'var(--font-sans), sans-serif' }}
+          >
+            Crafting Your Experience
+          </span>
           <span
             ref={counterTextRef}
-            className="text-xs sm:text-sm font-mono tracking-wider text-[#D6B887] font-semibold w-12 text-right tabular-nums"
+            className="text-xs sm:text-sm font-mono tracking-wider text-[#6366F1] font-bold tabular-nums"
           >
             0%
           </span>
+        </div>
+
+        {/* Thin Horizontal Track */}
+        <div className="w-64 sm:w-80 md:w-96 h-[3px] bg-[#E2E8F0] rounded-full overflow-hidden relative shadow-inner">
+          <div
+            ref={progressBarRef}
+            className="h-full bg-gradient-to-r from-[#6366F1] via-[#3B82F6] to-[#06B6D4] rounded-full relative"
+            style={{
+              width: '0%',
+              boxShadow: '0 0 10px rgba(6, 182, 212, 0.75)',
+            }}
+          />
         </div>
       </div>
     </div>
