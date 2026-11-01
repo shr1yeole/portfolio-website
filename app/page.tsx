@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { CinematicIntro } from '@/components/ui/CinematicIntro';
 import { getClientCollection } from '@/lib/firestore-client';
 import type { AdminProject } from '@/types/admin';
 
@@ -76,6 +77,9 @@ export default function Home() {
 
   return (
     <>
+      {/* Cinematic Website Entrance Animation */}
+      <CinematicIntro />
+
       {/* Dynamic Animated Entry Loading Overlay */}
       <AnimatePresence mode="wait">
         {loading && (
